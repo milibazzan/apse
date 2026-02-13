@@ -19,6 +19,10 @@ const timelineData = [
                 Para dar lugar al ordenamiento social, los criterios clínico-criminológicos se agudizaron y toda disfunción quedó catalogada como patológica, toda enfermedad a vincularse con la inmoralidad, con la delincuencia y con la locura. Simultáneamente, las políticas públicas que permitirían la legitimación de los derechos sociales eran desentendidas expresamente por el aparato estatal. 
             </p>
         `,
+    image: {
+      src: 'https://via.placeholder.com/600x400/1e3a5f/ffffff?text=Hospicio+de+las+Mercedes+1902',
+      caption: 'Hospicio de las Mercedes, institución emblemática del modelo asilar positivista.'
+    }
   },
   {
     id: 'reforma',
@@ -37,6 +41,10 @@ const timelineData = [
               La psicología positivista resultaba particularmente funcional al Estado del momento, ya que los diagnósticos permitían detectar déficits e impedimentos concretos para una satisfactoria integración laboral. Esto derivó en un paradigma asilar que llevaba a institucionalizar en hospicios o cárceles, y con ello garantizar cierto ordenamiento social, lo que resultó una solución estratégica al problema de la inmigración.          
             </p>
         `,
+    image: {
+      src: 'https://via.placeholder.com/600x400/8b4513/ffffff?text=Reforma+Universitaria+1918',
+      caption: 'La Reforma Universitaria impulsó nuevas perspectivas sobre la salud mental.'
+    }
   },
   {
     id: 'higiene',
