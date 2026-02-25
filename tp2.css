@@ -1,0 +1,537 @@
+/* ============================================
+   REFLEXIÓN SOBRE EL AMOR - LAYOUT EDITORIAL
+   Ensayo académico con estética contemporánea
+   ============================================ */
+
+/* ============================================
+   RESET Y CONFIGURACIÓN BASE
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   VARIABLES CSS - PALETA EDITORIAL
+   ============================================ */
+
+:root {
+    /* Paleta principal - Tonos rosas desaturados */
+    --color-primary: #b57f8a;           /* Rosa desaturado */
+    --color-secondary: #c49499;         /* Rosa viejo suave */
+    --color-accent: #8a9ba8;            /* Azul grisáceo suave */
+    
+    /* Colores de texto */
+    --color-text-dark: #2b2b2b;
+    --color-text-medium: #4f4f4f;
+    --color-text-light: #707070;
+    
+    /* Colores de fondo */
+    --color-bg-page: #fafaf8;           /* Blanco roto muy sutil */
+    --color-bg-quote: #f9f7f6;          /* Fondo para citas */
+    --color-bg-highlight: #f7f5f3;      /* Fondo para cajas destacadas */
+    
+    /* Colores de borde */
+    --color-border: #e8e3e0;
+    --color-border-light: #f0ebe8;
+    
+    /* Tipografía */
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-headings: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    
+    /* Espaciado editorial */
+    --max-width: 800px;
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 32px;
+    --spacing-lg: 48px;
+    --spacing-xl: 64px;
+    --spacing-xxl: 96px;
+}
+
+/* ============================================
+   ESTILOS GENERALES - LAYOUT EDITORIAL
+   ============================================ */
+
+body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-dark);
+    background-color: var(--color-bg-page);
+    padding: 0;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sangría para todos los párrafos */
+p {
+    text-indent: 1.27cm;
+    color: var(--color-text-dark);
+}
+
+/* Excepciones: párrafos que no deben tener sangría */
+.header p,
+.footer p,
+.quote-block p,
+.highlight-box p {
+    text-indent: 0;
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--spacing-xxl) var(--spacing-md);
+}
+
+/* ============================================
+   HEADER EDITORIAL
+   ============================================ */
+
+.header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header h1 {
+    font-family: var(--font-headings);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+}
+
+.header .subtitle {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-medium);
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   SECCIÓN INTRODUCCIÓN
+   ============================================ */
+
+.intro-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.intro-section p {
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ============================================
+   SECCIONES DE CONTENIDO
+   ============================================ */
+video {
+    margin-bottom: var(--spacing-md);
+}
+.content-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.section-title {
+    font-family: var(--font-headings);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+
+.subsection-title {
+    font-family: var(--font-headings);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+
+.section-content p {
+    margin-bottom: var(--spacing-md);
+    line-height: 1.75;
+    text-align: left;
+}
+
+.section-content p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================
+   CAJAS DESTACADAS
+   ============================================ */
+
+.highlight-box {
+    padding: var(--spacing-lg);
+    background-color: var(--color-bg-highlight);
+    border-left: 3px solid var(--color-secondary);
+    margin: var(--spacing-xl) 0;
+}
+
+.highlight-box h3 {
+    font-family: var(--font-headings);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.highlight-box p {
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.7;
+}
+
+.highlight-box p:last-child {
+    margin-bottom: 0;
+}
+
+.highlight-box ul {
+    margin-left: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.highlight-box li {
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.7;
+}
+
+.highlight-box li:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   SECCIONES DE ANÁLISIS
+   ============================================ */
+
+.analysis-section {
+    position: relative;
+}
+
+/* Línea vertical sutil al lado izquierdo */
+.analysis-section::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--spacing-md));
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        var(--color-primary) 10%,
+        var(--color-secondary) 90%,
+        transparent 100%
+    );
+    opacity: 0.3;
+}
+
+/* ============================================
+   SECCIÓN CONCLUSIÓN
+   ============================================ */
+
+.conclusion-section {
+    margin-top: var(--spacing-xxl);
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid var(--color-border);
+}
+
+.conclusion-section .section-title {
+    color: var(--color-primary);
+}
+
+/* ============================================
+   SEPARADORES VISUALES SUTILES
+   ============================================ */
+
+.section-divider {
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        var(--color-border) 30%,
+        var(--color-border) 70%,
+        transparent 100%
+    );
+    margin: var(--spacing-xxl) 0;
+}
+
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+    margin-top: var(--spacing-xxl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-light);
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.6;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET
+   ============================================ */
+
+@media (max-width: 900px) {
+    body {
+        font-size: 17px;
+    }
+
+    .container {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .header h1 {
+        font-size: 2.3rem;
+    }
+
+    .header .subtitle {
+        font-size: 1.1rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .subsection-title {
+        font-size: 1.35rem;
+    }
+
+    .quote-block {
+        padding: var(--spacing-md);
+        font-size: 1.15rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    body {
+        font-size: 17px;
+    }
+
+    .container {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .header {
+        margin-bottom: var(--spacing-xl);
+        padding-bottom: var(--spacing-lg);
+    }
+
+    .header h1 {
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+    }
+
+    .header .subtitle {
+        font-size: 1.05rem;
+    }
+
+    .intro-section {
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .intro-section p {
+        font-size: 1.05rem;
+    }
+
+    .content-section {
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .subsection-title {
+        font-size: 1.25rem;
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .section-content p {
+        font-size: 1rem;
+    }
+
+    .quote-block {
+        margin: var(--spacing-lg) 0;
+        padding: var(--spacing-md);
+        padding-left: var(--spacing-sm);
+        font-size: 1.1rem;
+    }
+
+    .highlight-box {
+        padding: var(--spacing-md);
+        margin: var(--spacing-lg) 0;
+    }
+
+    .highlight-box h3 {
+        font-size: 1.2rem;
+    }
+
+    .analysis-section::before {
+        display: none;
+    }
+
+    .section-divider {
+        margin: var(--spacing-xl) 0;
+    }
+
+    .conclusion-section {
+        margin-top: var(--spacing-xl);
+        padding-top: var(--spacing-lg);
+    }
+
+    .footer {
+        margin-top: var(--spacing-xl);
+        padding-top: var(--spacing-md);
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE PEQUEÑO
+   ============================================ */
+
+@media (max-width: 480px) {
+    body {
+        font-size: 16px;
+    }
+
+    .container {
+        padding: var(--spacing-lg) var(--spacing-sm);
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
+    }
+
+    .header .subtitle {
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.45rem;
+    }
+
+    .subsection-title {
+        font-size: 1.2rem;
+    }
+
+    .quote-block {
+        font-size: 1.05rem;
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+
+/* Respeto por preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Estados de foco visibles */
+a:focus,
+button:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Enlaces */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+a:hover {
+    border-bottom-color: var(--color-primary);
+}
+
+/* ============================================
+   SELECCIÓN DE TEXTO
+   ============================================ */
+
+::selection {
+    background-color: rgba(181, 127, 138, 0.2);
+    color: var(--color-text-dark);
+}
+
+::-moz-selection {
+    background-color: rgba(181, 127, 138, 0.2);
+    color: var(--color-text-dark);
+}
+
+/* ============================================
+   IMPRESIÓN
+   ============================================ */
+
+@media print {
+    body {
+        background-color: white;
+        font-size: 12pt;
+    }
+
+    .container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .header {
+        page-break-after: avoid;
+    }
+
+    .section-title,
+    .subsection-title {
+        page-break-after: avoid;
+    }
+
+    .content-section,
+    .quote-block,
+    .highlight-box {
+        page-break-inside: avoid;
+    }
+
+    .quote-block {
+        border-left-width: 2px;
+    }
+
+    a {
+        color: var(--color-text-dark);
+        border-bottom: none;
+    }
+
+    .analysis-section::before {
+        display: none;
+    }
+}
