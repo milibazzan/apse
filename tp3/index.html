@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TP3 — Análisis de caso clínico | APSE</title>
+  <link rel="icon" type="image/png"
+    href="https://www.dgoae.servicios.unam.mx/COE/TeOrienta/admon/creditos/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- React + ReactDOM + Babel (CDN, sin build step) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* ============================================
+       RESET Y VARIABLES
+       ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #7a8fa8;
+      /* azul grisáceo — tono clínico/neutro */
+      --primary-light: #a8bccf;
+      --accent: #b57f8a;
+      /* rosa desaturado (coherente con tp2) */
+      --text-dark: #2b2b2b;
+      --text-medium: #4f4f4f;
+      --text-light: #707070;
+      --bg-page: #fafaf8;
+      --bg-card: #f7f5f3;
+      --bg-highlight: #eef2f6;
+      --border: #e0e6ed;
+      --border-light: #eceff3;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --max-width: 860px;
+      --radius: 6px;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--text-dark);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    p {
+      text-indent: 1.27cm;
+      color: var(--text-dark);
+    }
+
+    /* ============================================
+       NAVBAR
+       ============================================ */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 250, 248, 0.95);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .navbar-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 48px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .navbar-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      white-space: nowrap;
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-light);
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: var(--bg-highlight);
+      color: var(--primary);
+    }
+
+    .nav-sep {
+      color: var(--border);
+      font-size: 0.75rem;
+      padding: 0 2px;
+    }
+
+    /* ============================================
+       LAYOUT PRINCIPAL
+       ============================================ */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+    }
+
+    /* ============================================
+       HEADER
+       ============================================ */
+    .header {
+      text-align: center;
+      margin-bottom: 56px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--bg-highlight);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 14px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .header .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      max-width: 580px;
+      margin: 0 auto;
+      text-indent: 0;
+    }
+
+    .header .dx-badge {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(181, 127, 138, 0.08);
+      border: 1px solid rgba(181, 127, 138, 0.25);
+      border-radius: 99px;
+      padding: 4px 14px;
+    }
+
+    /* ============================================
+       SECTION WRAPPER
+       ============================================ */
+    .section {
+      margin-bottom: 72px;
+      scroll-margin-top: 64px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ============================================
+       INFO PERSONAL — FICHA
+       ============================================ */
+    .ficha-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .ficha-item {
+      background: var(--bg-page);
+      padding: 14px 18px;
+    }
+
+    .ficha-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .ficha-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+
+    .ficha-value {
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      line-height: 1.5;
+      text-indent: 0;
+      white-space: pre-wrap;
+    }
+
+    .ficha-value.placeholder {
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* ============================================
+       CAROUSEL DE ESCENAS
+       ============================================ */
+    .carousel-wrapper {
+      position: relative;
+    }
+
+    .carousel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .carousel-counter {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .carousel-nav {
+      display: flex;
+      gap: 6px;
+    }
+
+    .carousel-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      background: var(--bg-page);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .carousel-btn:hover:not(:disabled) {
+      background: var(--bg-highlight);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .scene-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-page);
+    }
+
+    .scene-card-header {
+      background: var(--bg-highlight);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .scene-number {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .scene-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-top: 4px;
+    }
+
+    .scene-timestamp {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      white-space: nowrap;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      background: var(--bg-page);
+      flex-shrink: 0;
+    }
+
+    .scene-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .scene-field-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .scene-desc {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text-medium);
+      font-style: italic;
+      text-indent: 0;
+      white-space: pre-line;
+    }
+
+    .scene-dialogue {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--text-dark);
+      border-left: 3px solid var(--border);
+      padding-left: 14px;
+      font-style: italic;
+      text-indent: 0;
+    }
+
+    .scene-capture {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      background: var(--bg-card);
+      color: var(--text-light);
+      font-size: 0.82rem;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s, width 0.2s;
+    }
+
+    .dot.active {
+      background: var(--primary);
+      width: 18px;
+    }
+
+    /* ============================================
+       ACCORDION
+       ============================================ */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      background: var(--bg-page);
+      border: none;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      text-align: left;
+      transition: background 0.15s;
+    }
+
+    .accordion-trigger:hover {
+      background: var(--bg-card);
+    }
+
+    .accordion-trigger.open {
+      background: var(--bg-highlight);
+      color: var(--primary);
+    }
+
+    .accordion-icon {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .accordion-icon.open {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.25s ease;
+    }
+
+    .accordion-content.open {
+      grid-template-rows: 1fr;
+    }
+
+    .accordion-content-inner {
+      overflow: hidden;
+      padding: 0 18px;
+      transition: padding 0.25s ease;
+    }
+
+    .accordion-content.open .accordion-content-inner {
+      padding: 16px 18px 18px;
+    }
+
+    .accordion-content p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--text-medium);
+      text-indent: 0;
+      margin-bottom: 10px;
+    }
+
+    .accordion-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .accordion-content .placeholder-text {
+      color: var(--text-light);
+      font-style: italic;
+      font-size: 0.88rem;
+      white-space: pre-line;
+    }
+
+    /* Sub-label dentro de accordion */
+    .sub-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    .sub-label:first-child {
+      margin-top: 0;
+    }
+
+    /* ============================================
+       CRITERIOS DSM — TARJETAS A/B/C
+       ============================================ */
+    .dsm-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dsm-criterion-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dsm-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: white;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    /* ============================================
+       TABLA DE DIAGNÓSTICO DIFERENCIAL
+       ============================================ */
+    .dx-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .dx-table th {
+      background: var(--bg-highlight);
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .dx-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: var(--text-medium);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    .dx-table tr:first-child td {
+      background: rgba(122, 143, 168, 0.05);
+    }
+
+    .dx-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ============================================
+       IMPRESIÓN FINAL
+       ============================================ */
+    .impresion-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .impresion-box-header {
+      background: var(--bg-highlight);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .impresion-box-body {
+      padding: 20px;
+    }
+
+    .impresion-box-body p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--text-medium);
+      text-indent: 0;
+      margin-bottom: 12px;
+    }
+
+    .impresion-box-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .impresion-box-body .placeholder-text {
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .footer p {
+      text-indent: 0;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 600px) {
+      .ficha-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ficha-item.full {
+        grid-column: 1;
+      }
+
+      .header h1 {
+        font-size: 1.6rem;
+      }
+
+      .scene-card-header {
+        flex-direction: column;
+      }
+
+      .dx-table {
+        font-size: 0.82rem;
+      }
+    }
+
+    /* Focus visible */
+    button:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    ::selection {
+      background: rgba(122, 143, 168, 0.15);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    /* ============================================
+       DATOS — editar aquí para completar el TP
+       ============================================ */
+
+    const PACIENTE = {
+      nombre: "Marlo Moreau",
+      edad: "40 años",
+      ocupacion: "Encargada de Recursos Humanos en una empresa que hace barras de proteína. Actualmente de licencia por maternidad.",
+      grupoFamiliar: "Esposo: Drew.\nHijos:\n- Jonah, el hijo mayor. Presenta dificultades conductuales.\n- Sarah, la hija del medio.\n- Mia, hija menor, recién nacida.\n",
+      antecedentes: "Psicológicos: Depresión postparto documentada tras el nacimiento del primer hijo. Se observan episodios de desregulación emocional, fatiga extrema y dificultades en la gestión de estrés.\n\nFisiológicos: No se reportan enfermedades crónicas, aunque se observa evidencia de privación de sueño severa y agotamiento físico asociado al cuidado infantil intensivo.",
+      motivoConsulta: "El análisis se realiza a partir de la observación de un cuadro en el que se identifica sobrecarga emocional significativa, deterioro en el funcionamiento cotidiano y la presencia de un fenómeno perceptivo sin correlato externo.",
+      dx: "Trastorno Psicótico Breve con inicio posparto",
+    };
+
+    const SCENES = [
+      {
+        id: 1,
+        title: "Conflicto en el auto camino a la escuela",
+        timestamp: "04:48 - 05:44",
+        description: "Durante el camino hacia la escuela por la mañana, Marlo enfrenta una situación de alta demanda, con uno de sus hijos presentando una crisis ante un cambio en la rutina. A pesar de intentar inicialmente sostener una respuesta calmada, Marlo evidencia un progresivo desborde, con aumento en la urgencia del tono y dificultades para mantener el límite, terminando por ceder ante la exigencia del niño.",
+        indagacion: null,
+        video: "1. estacionamiento.mov",
+      },
+      {
+        id: 2,
+        title: "Viaje en el auto",
+        timestamp: "9:58 - 10:24",
+        description: "En una conversación con su esposo, Marlo responde 'Me quiero matar' en un tono serio y sin emoción evidente. Sarah escucha y reacciona con desconcierto. Drew interviene para aclarar que se trata de una broma.",
+        indagacion: "Marlo: ¿Me repites el nombre del perro?\nDrew: Prosecco.\nMarlo: Me quiero matar.\nSarah: ¿Qué?\nDrew: No, mamá bromea, cariño, como un payaso.",
+        video: "2. auto.mov",
+      },
+      {
+        id: 3,
+        title: "Cena en casa del hermano 1",
+        timestamp: "11:21 - 11:51",
+        description: "Durante una cena familiar, desarrolla una idea sobre su apariencia y relata una historia de manera extendida, con un ritmo de habla que evidencia esfuerzo. Hace pausas para tomar aire y muestra signos de fatiga. Su expresión general se mantiene apagada y con bajo nivel de energía.",
+        indagacion: "Elyse: Marlo, estás resplandeciente.\nMarlo: ¿De verdad? Porque me siento como un tacho de basura abandonado.",
+        video: "3. Cena en casa del hermano 1.mov",
+      },
+      {
+        id: 4,
+        title: "Cena en casa del hermano 2",
+        timestamp: "12:21 - 12:40",
+        description: "Marlo se encoge de hombros y hace una mueca sin energía ante la pregunta de cuál será el sexo del bebé. Cuando le dicen que se enterará en cualquier momento, responde 'Sí' en un tono bajo, con poca expresión. Mientras los interlocutores muestran entusiasmo, Marlo presenta una sonrisa sutil y breve y desvía la mirada.",
+        indagacion: null,
+        video: "4. Cena en casa del hermano 2.mov",
+      },
+      {
+        id: 5,
+        title: "Parto",
+        timestamp: "19:34 - 20:00; 20:18 - 20:42",
+        description: "Marlo se mantiene inmóvil incluso ante la aplicación de la epidural, con la mirada fija en un punto indeterminado, y sólo hace una leve contracción facial. El personal de salud celebra la ausencia de reacción. Posteriormente, durante el parto, realiza los esfuerzos físicos esperables (pujos), pero una vez finalizado el parto, su expresión cambia notablemente. Permanece seria, con escasa reactividad emocional, respiración marcada y mirada desviada en dirección opuesta a la bebé recién nacida. Tiene los párpados caídos, bajo nivel de expresividad facial y apariencia general de cansancio. No se observa una reacción emocional evidente ante el nacimiento ni ante la revelación del sexo del bebé.",
+        indagacion: null,
+        video: "5. parto.mov",
+      },
+      {
+        id: 6,
+        title: "Baño del hospital",
+        timestamp: "22:04 - 22:43",
+        description: "Tras el parto, una enfermera le pide a Marlo orinar antes de recibir el alta. Se la observa visiblemente agotada y con signos de malestar físico. Durante la interacción, eleva el tono de voz, responde de manera confrontativa e insultos dirigidos a la enfermera. La situación ocurre en un contexto de exposición física (puerta del baño abierta).",
+        indagacion: "Enfermera: Debe descansar, mamá\nMarlo: Debo orinar, carajo",
+        video: "6. baño.mov",
+      },
+      {
+        id: 7,
+        title: "Vida diaria",
+        timestamp: "22:45 - 25:09",
+        description: "A lo largo de los días, Marlo se queda dormida en el sillón con la bebé en brazos, se despierta de forma abrupta y continúa con tareas de alimentación y traslado. Se evidencian signos de desorganización en el entorno doméstico (objetos fuera de lugar, manchas, derrames). Jonah y Sarah juegan a su alrededor mientras ella está dormida en el sillón. Mantiene rutinas de cuidado automatizadas  (mecer, alimentar, caminar) durante el día y la noche, con cambios mínimos en la vestimenta. Tiene los ojos rojos y los párpados caídos. En una ocasión, está sentada en el sillón, desparramada, mirando un programa infantil, mientras mece a la bebé en su cuna con un dedo. Se la ve llorar.",
+        indagacion: null,
+        video: "7. vida diaria.mov",
+      },
+      {
+        id: 8,
+        title: "Reunión con la directora de la escuela",
+        timestamp: "26:00 - 28:35",
+        description: "Durante una reunión con la directora de la escuela, ante la sugerencia de cambiar a Jonah de colegio, Marlo eleva progresivamente el tono de voz, interrumpe a la interlocutora, responde de manera confrontativa y utiliza expresiones insultantes. En medio de la agitación, golpea la transportadora donde lleva a Mia. Al salir al exterior, se observa que se encuentra con vestimenta ligera en bajas temperaturas (se evidencia vapor al exhalar). En el interior del auto, permanece con la mirada fija y la respiración agitada mientras la bebé llora. Presenta ojos enrojecidos y llorosos. En esa alteración, busca en su cartera y encuentra un papel amarillo que su hermano le había dado noches atrás con el número de una niñera nocturna.",
+        indagacion: "Marlo: Yo soy así de verdad, cuando no les chupo el culo. ¡Sorpresa!",
+        video: "8. escuela.mov",
+      },
+      {
+        id: 9,
+        title: "Cena familiar",
+        timestamp: "28:38 - 30:15",
+        description: "Durante la cena, Marlo sirve pizza y brócoli congelados. Tiene los párpados caídos y la mirada perdida. Sarah y Jonah usan celulares mientras comen. Ante un comentario de Drew señalando que previamente existía una regla de ella sobre el uso de pantallas durante la semana, Marlo le dirige la mirada hacia sin responder. Él le pregunta si está bien y Marlo tampoco responde. Ante un incidente en la mesa (derrame de leche sobre su ropa), Marlo no presenta una reacción inmediata. Se quita la prenda sin emitir comentarios y permanece en la mesa.",
+        indagacion: null,
+        video: "9. cena.mov",
+      },
+      {
+        id: 10,
+        title: "Llegada de Tully",
+        timestamp: "32:39 - 33:06",
+        description: null,
+        indagacion: "Marlo: ¿Cómo suele funcionar esto?\nTully: Bueno, ¿cómo quieres que funcione?\nMarlo: No lo sé.\nTully: Está bien. Estoy aquí para cuidarte.",
+        video: "10. tully1.mov",
+      },
+      {
+        id: 11,
+        title: "Mañana posterior a la llegada de Tully",
+        timestamp: "36:47 - 37:13",
+        description: "Al bajar de su habitación por la mañana, Marlo se detiene y presenta una reacción de sorpresa ante el estado de la casa, que se encuentra ordenada y limpia. Recorre el espacio y dirige su atención a distintos elementos del ambiente.",
+        indagacion: null,
+        video: "11. mañana tully.mov",
+      },
+      {
+        id: 12,
+        title: "Conversación con Drew sobre la niñera",
+        timestamp: "37:16 - 38:09",
+        description: "Marlo conversa con su esposo sobre Tully. En el intercambio, describe acciones realizadas durante la noche por la niñera. Durante la conversación no presenta tanta fatiga como en escenas anteriores.",
+        indagacion: "Marlo: [Tully] Sabía exactamente qué hacer.\n–\nMarlo: No recuerdo cuánto hace que no dormía así. Es decir... Es como si pudiera ver los colores de nuevo.",
+        video: "12. parque drew.mov",
+      },
+      {
+        id: 13,
+        title: "Conversación con Tully",
+        timestamp: "43:43 - 44:58",
+        description: null,
+        indagacion: "Tully: Pareces una buena mamá.\nMarlo: Las buenas mamás organizan fiestas para todo el curso, y noches de casino. Cocinan pastelitos que parecen Minions. Yo estoy demasiado cansada como para hacer esas cosas. Francamente, solo vestirme me agota. Abro mi armario y pienso: '¿No hice esto ya?'\n–\nTully: ¿Qué hubieras querido hacer?\nMarlo: No... Si hubiera tenido un sueño que no se hizo realidad, al menos podría estar furiosa con el mundo. En cambio, estoy harta de mí misma.\nTully: Estás vacía.\nMarlo: Sí.\n–\nTully: Estoy aquí para ayudarte con todo, no solo con Mía.",
+      },
+      {
+        id: 14,
+        title: "Cena familiar posterior a la llegada de Tully",
+        timestamp: "47:03 - 47:18",
+        description: "En la cena familiar, la mesa está completamente servida. Hay pan, múltiples guarniciones y Marlo cocinó un pollo. Luce descansada, conversa de manera animada y está más sonriente.",
+        indagacion: null,
+      },
+      {
+        id: 15,
+        title: "Juegos con sus hijos posterior a la llegada de Tully",
+        timestamp: "53:09 - 54:00",
+        description: "Marlo participa activamente en actividades lúdicas con sus hijos, incluyendo juegos con pelota y bloques, con una sonrisa. Se observa otra cena familiar. La mesa está servida, la comida es variada y Marlo está sonriente.",
+        indagacion: null,
+      },
+      {
+        id: 16, 
+        title: "Discusión en el bar",
+        timestamp: "1:11:34 - 1:13:47",
+        description: null,
+        indagacion: "Marlo: Necesito que te quedes un poco más, ¿sabes? Porque necesito tu ayuda. Por favor.\nTully: Solo vine a arreglar un problema.\nMarlo: Está bien. Apuesto a que tienes grandes planes. Es decir, estás en tus 20 y es fantástico. Pero los 30 se te vienen encima, como un camión de basura a las 5:00 a. m. ¿Qué harás cuando ese lindo culito tuyo se caiga, y tus pies te crezcan media talla en cada embarazo, con todo ese espíritu libre? Eso deja de ser encantador. Y empieza a ser simplemente feo.\nTully: No le temo al futuro.\nMarlo: Dios mío. Deberías.\nTully: Tú crees que eres un fracaso pero has realizado tu mayor sueño. Esa misma rutina que desprecias. Es tu regalo para ellos. Despertarte cada día y hacer las mismas cosas para ellos, una y otra vez. Eres aburrida. Tu matrimonio es aburrido. Tu casa es aburrida, ¡pero eso es fantástico! Ese es el gran sueño, crecer, ser opaca y constante, y criar a tus hijos en ese círculo de seguridad.\nMarlo: No tengo seguridad. ¡Tengo miedo!",
+      },
+      {
+        id: 17,
+        title: "Accidente",
+        timestamp: "1:17:47 - 1:19:43",
+        description: "Luego de la salida al bar, Marlo se encuentra en el asiento delantero del auto con el cuerpo inclinado hacia adelante y signos de somnolencia. Presenta dificultad para mantener los ojos abiertos y responde de manera lenta y entrecortada durante la interacción con Tully. A lo largo del trayecto, su nivel de alerta disminuye progresivamente hasta quedarse dormida al volante. Ante los reflectores y el sonido de una bocina proveniente de otro vehículo que se dirige hacia el de ella, abre los ojos de forma repentina, realiza un movimiento brusco del volante, el auto se desvía de su camino y cae desde un puente hacia un río.",
+        indagacion: 'Marlo: ¿Qué haré sin ti?\nTully: Cuidarás de ti misma.',
+      },
+      {
+        id: 18,
+        title: "Drew en el hospital",
+        timestamp: "1:21:32 - 1:22:02",
+        description: null,
+        indagacion: "Doctora: En realidad, creemos que [Marlo] padece de agotamiento y privación del sueño extremos.\nDrew: No entiendo cómo. Parecía estar mejor que nunca. Hasta creo que por momentos hacía cosas fuera de su carácter.",
+      },
+      {
+        id: 19,
+        title: "Flashback",
+        timestamp: "[ min:ss ]",
+        description: "En distintas escenas, Marlo interactúa con Tully mediante diálogo y acciones compartidas. En escenas posteriores, se la observa en los mismos contextos sin la presencia de la niñera. A lo largo de estas secuencias, Marlo presenta con frecuencia expresión seria, párpados caídos, mirada desviada y movimientos lentos.",
+        indagacion: null,
+      },
+      {
+        id: 20,
+        title: "Despedida de Tully",
+        timestamp: "[ min:ss ]",
+        description: "Marlo conversa con su esposo sobre la niñera nocturna. En el intercambio, describe acciones realizadas durante la noche por Tully. Durante la conversación no presenta tanta fatiga como en escenas anteriores.",
+        indagacion: "Tully: Bueno, realmente estuve aquí para ayudarte a pasar la zona de peligro.\n–\nTully: Gracias por mantenerme viva.\nMarlo: Igualmente.",
+      },
+      {
+        id: 21,
+        title: "Vuelta a casa",
+        timestamp: "[ min:ss ]",
+        description: "Marlo se pone auriculares conectados a su celular, cierra los ojos y sonríe de forma relajada. Comienza a cocinar. Drew se acerca, le saca un auricular, se lo pone él y comienza a cocinar con ella.",
+        indagacion: null
+      },
+    ]; 
+
+    const DSM_CRITERIA = [
+      {
+        id: "A",
+        label: "Criterio A",
+        description: "Presencia de uno (o más) de los siguientes síntomas: ideas delirantes, alucinaciones, lenguaje desorganizado, comportamiento muy desorganizado o catatónico.",
+        evidenciaObservacional: "En las escenas donde aparece Tully (Escenas 10, 12-15, 17), se observa que Marlo interactúa con la niñera como si fuera real, aunque en realidad está sola. Esta interacción evidencia la presencia de una alucinación visual y auditiva.",
+        evidenciaIndagatoria: "Marlo se refiere a Tully en conversaciones con Drew, describiendo acciones, instrucciones y cuidados que la niñera realiza, lo que confirma su experiencia subjetiva de la presencia de Tully.",
+      },
+      {
+        id: "B",
+        label: "Criterio B",
+        description: "Duración del episodio de al menos un día pero menos de un mes, con retorno eventual al nivel de funcionamiento previo.",
+        evidenciaObservacional: "Las interacciones con Tully y los episodios de desorganización emocional ocurren en un período corto (durante el posparto inmediato y semanas siguientes), y tras la resolución de la crisis, Marlo retoma el funcionamiento habitual.",
+        evidenciaIndagatoria: "Durante la despedida de Tully (Escena 21), reconoce que la asistencia fue temporal. Tully confirma que su intervención fue limitada ('para ayudarte a pasar la zona de peligro'), evidenciando que el episodio fue acotado y que Marlo retoma funciones sin la presencia de Tully.",
+      },
+      {
+        id: "C",
+        label: "Criterio C",
+        description: "El trastorno no se explica mejor por un trastorno depresivo mayor o bipolar con características psicóticas, ni por otro trastorno psicótico como esquizofrenia o trastorno esquizoafectivo, y no es atribuible a efectos fisiológicos de una sustancia o afección médica.",
+        evidenciaObservacional: "Se cumple por omisión. El conjunto de síntomas observados no corresponden a los trastornos del diagnóstico diferencial.",
+        evidenciaIndagatoria: "Se cumple por omisión. El episodio no se puede atribuir a los efectos fisiológicos de una sustancia o de otra afección médica.",
+      },
+    ];
+
+    const TCC = {
+      creenciasNucleares: "Soy un fracaso.\nMi valor disminuyó con el paso del tiempo / la maternidad.\nNo soy una buena madre.\nEstoy sola.\nNo tengo seguridad.\nAlgo en mí está mal.",
+      creenciasIntermedias: "Una buena madre debería poder con todo.\nSi no puedo con todo, estoy fallando.\nNo debería necesitar ayuda.\nTengo que seguir aunque esté agotada.\nSi no cumplo con todo, decepciono a los demás.",
+      pensamientosAutomaticos: "Me quiero matar.\nMe siento como un tacho de basura abandonado.\nEstoy harta de mí misma.\nNo tengo seguridad, tengo miedo.\nLos demás piensan que soy mala madre.",
+      factoresVulnerabilidad: "Antecedente de episodio depresivo posterior al nacimiento de su primer hijo.\nIdealización del rol materno.\nBaja tolerancia al error propio.\nTendencia a la autocrítica.",
+      desencadenantes: "Nacimiento reciente de su hija.\nPrivación de sueño.\nSobrecarga de tareas domésticas y de cuidado.\nDemandas de los hijos.\nHijo con problemas de conducta no diagnosticados.\nFalta de sistema de apoyo percibido.",
+      mantenimiento: "Falta de descanso sostenida.\nPensamientos negativos recurrentes.\nFalta de búsqueda de ayuda.\nDesconexión progresiva del entornoDependencia de la figura de Tully.\nSobrecarga constante sin espacios de recuperación.",
+      sesgos: {
+        cognitivos: "Pensamiento dicotómico en cuanto a la maternidad\nSobregeneralización\nCatastrofización\nLectura del pensamiento",
+        conductuales: "Respuestas automatizadas de cuidado.\nEvitación de búsqueda de ayuda.\nSobrecompensación en el funcionamiento.",
+        fisiologicos: "Privación de sueño.\nFatiga persistente.\nSomnolencia diurna.\nLlanto.\nAgitación en momentos de desborde.\nEstado puérpero",
+      },
+    };
+
+    const DX_DIFERENCIAL = [
+      {
+        dx: "Trastorno Psicótico Breve con inicio posparto (diagnóstico presuntivo)",
+        similitudes: "[ Síntomas psicóticos de inicio agudo, contexto posparto, duración breve del episodio. ]",
+        diferencias: "[ No hay historia previa de episodios psicóticos ni trastorno del estado de ánimo de base. ]",
+        argumento: "Diagnóstico principal",
+      },
+      {
+        dx: "Trastorno Depresivo Mayor con episodio psicótico periparto",
+        similitudes: "[ Contexto periparto, posible disforia, síntomas psicóticos. ]",
+        diferencias: "[ En TDM predomina el estado de ánimo depresivo persistente como núcleo del cuadro, y los síntomas psicóticos son secundarios al humor. Evaluar duración y estructura del episodio. ]",
+        argumento: "Descartar",
+      },
+    ];
+
+    const REFERENCIAS = [
+      {
+        id: 1,
+        texto: "American Psychiatric Association. (2013). ",
+        titulo: "Diagnostic and statistical manual of mental disorders",
+        resto: " (5.ª ed.). APA Publishing.",
+        tipo: "libro",
+      },
+      {
+        id: 2,
+        texto: "Reitman, J. (Director). (2018).",
+        titulo: "Tully. ",
+        resto: "Bron Studios; Right of Way Films; Denver and Delilah Productions.",
+        tipo: "película",
+      },
+      {
+        id: 3,
+        texto: "Tolin, D. (2016). Crear conceptualizaciones sustanciosas. [Creating substantial conceptualizations]. En D. Tolin, ",
+        titulo: "Doing CBT. A Comprehensive Guide to Working with Behaviors, Thoughts, and Emotions",
+        resto: " (pp. 94-108). The Guilford Press. (Traducción: Alicia Facio)",
+        tipo: "libro",
+      },
+      {
+        id: 4,
+        texto: "Barlow, D. H., Durand, V. M., & Hofmann, S. G. (2023). Clinical assessment and Diagnosis [Evaluación clínica y diagnóstico]. En ",
+        titulo: "Psychopathology: An Integrative Approach to Mental Disorders",
+        resto: ", Ninth Ed. (pp. 72-100). Cengage Learning.",
+        tipo: "libro",
+      },
+      {
+        id: 5,
+        texto: "Nakić Radoš, S., et al. (2024). Diagnosis of peripartum depression disorder: A state-of-the-art approach from the COST Action Riseup-PPD. ",
+        titulo: "Comprehensive Psychiatry",
+        resto: ", 130, 152456. https://doi.org/10.1016/j.comppsych.2024.152456",
+        tipo: "articulo",
+      },
+    ];
+
+    /* ============================================
+       COMPONENTES
+       ============================================ */
+
+    /* --- Accordion genérico --- */
+    function Accordion({ items }) {
+      const [open, setOpen] = useState(null);
+      const toggle = (id) => setOpen(open === id ? null : id);
+
+      return (
+        <div className="accordion">
+          {items.map((item) => (
+            <div className="accordion-item" key={item.id}>
+              <button
+                className={`accordion-trigger ${open === item.id ? "open" : ""}`}
+                onClick={() => toggle(item.id)}
+                aria-expanded={open === item.id}
+              >
+                <span>{item.trigger}</span>
+                <span className={`accordion-icon ${open === item.id ? "open" : ""}`}>▼</span>
+              </button>
+              <div className={`accordion-content ${open === item.id ? "open" : ""}`}>
+                <div className="accordion-content-inner">
+                  {item.content}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    /* --- Carrusel de escenas --- */
+    function SceneCarousel({ scenes }) {
+      const [current, setCurrent] = useState(0);
+      const total = scenes.length;
+      const scene = scenes[current];
+
+      return (
+        <div className="carousel-wrapper">
+          <div className="carousel-header">
+            <span className="carousel-counter">Escena {current + 1} de {total}</span>
+            <div className="carousel-nav">
+              <button
+                className="carousel-btn"
+                onClick={() => setCurrent(c => c - 1)}
+                disabled={current === 0}
+                aria-label="Escena anterior"
+              >‹</button>
+              <button
+                className="carousel-btn"
+                onClick={() => setCurrent(c => c + 1)}
+                disabled={current === total - 1}
+                aria-label="Escena siguiente"
+              >›</button>
+            </div>
+          </div>
+
+          <div className="scene-card">
+            <div className="scene-card-header">
+              <div>
+                <div className="scene-number">Escena {scene.id}</div>
+                <div className="scene-title">{scene.title}</div>
+              </div>
+              <div className="scene-timestamp">{scene.timestamp}</div>
+            </div>
+            <div className="scene-body">
+
+              <div>
+                {scene.video ? (
+                  <video
+                    key={scene.id}
+                    controls
+                    style={{ width: "100%", borderRadius: "var(--radius)", display: "block" }}
+                  >
+                    <source src={scene.video} />
+                  </video>
+                ) : (
+                  <div className="scene-capture">
+                    [ Insertar captura de pantalla o referencia visual aquí ]
+                    <br />
+                    <span style={{ fontSize: "0.78rem", opacity: 0.7 }}>
+                      Timestamp: {scene.timestamp}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {scene.description && (
+                <div>
+                  <div className="scene-field-label">Observación conductual</div>
+                  <p style={{ fontSize: "0.88rem", lineHeight: 1.65, color: "var(--text-medium)", margin: 0 }}>
+                    {scene.description}
+                  </p>
+                </div>
+              )}
+
+              {scene.indagacion && (
+                <div>
+                  <div className="scene-field-label">Indagación</div>
+                  <p style={{ fontSize: "0.88rem", lineHeight: 1.65, color: "var(--text-medium)", margin: 0, whiteSpace: "pre-wrap", fontStyle: "italic", textIndent: 0 }}>
+                    {scene.indagacion}
+                  </p>
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          <div className="carousel-dots">
+            {scenes.map((_, i) => (
+              <div
+                key={i}
+                className={`dot ${i === current ? "active" : ""}`}
+                onClick={() => setCurrent(i)}
+                role="button"
+                aria-label={`Ir a escena ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    /* --- Criterios DSM --- */
+    function DSMCriteriaSection({ criteria }) {
+      const items = criteria.map((c) => ({
+        id: c.id,
+        trigger: (
+          <span className="dsm-criterion-label">
+            <span className="dsm-badge">{c.id}</span>
+            <span>{c.label} — <span style={{ fontWeight: 400, color: "var(--text-light)" }}>{c.description}</span></span>
+          </span>
+        ),
+        content: (
+          <>
+            <div className="sub-label">Evidencia observacional</div>
+            <p className="placeholder-text">{c.evidenciaObservacional}</p>
+            <div className="sub-label">Evidencia indagatoria</div>
+            <p className="placeholder-text">{c.evidenciaIndagatoria}</p>
+          </>
+        ),
+      }));
+      return <Accordion items={items} />;
+    }
+
+    /* --- Perfil TCC --- */
+    function TCCSection({ tcc }) {
+      const items = [
+        {
+          id: "cn",
+          trigger: "Creencias nucleares",
+          content: <p className="placeholder-text">{tcc.creenciasNucleares}</p>,
+        },
+        {
+          id: "ci",
+          trigger: "Creencias intermedias",
+          content: <p className="placeholder-text">{tcc.creenciasIntermedias}</p>,
+        },
+        {
+          id: "pa",
+          trigger: "Pensamientos automáticos",
+          content: <p className="placeholder-text">{tcc.pensamientosAutomaticos}</p>,
+        },
+        {
+          id: "fv",
+          trigger: "Factores de vulnerabilidad",
+          content: <p className="placeholder-text">{tcc.factoresVulnerabilidad}</p>,
+        },
+        {
+          id: "de",
+          trigger: "Desencadenantes",
+          content: <p className="placeholder-text">{tcc.desencadenantes}</p>,
+        },
+        {
+          id: "ma",
+          trigger: "Factores de mantenimiento",
+          content: <p className="placeholder-text">{tcc.mantenimiento}</p>,
+        },
+        {
+          id: "sg",
+          trigger: "Sesgos cognitivos, conductuales y fisiológicos",
+          content: (
+            <>
+              <div className="sub-label">Cognitivos</div>
+              <p className="placeholder-text">{tcc.sesgos.cognitivos}</p>
+              <div className="sub-label">Conductuales</div>
+              <p className="placeholder-text">{tcc.sesgos.conductuales}</p>
+              <div className="sub-label">Fisiológicos</div>
+              <p className="placeholder-text">{tcc.sesgos.fisiologicos}</p>
+            </>
+          ),
+        },
+      ];
+      return <Accordion items={items} />;
+    }
+
+    /* --- Observaciones vinculadas a escenas --- */
+    function ObservacionesSection({ scenes }) {
+      const items = scenes
+        .filter((s) => s.description != null)
+        .map((s) => ({
+          id: s.id,
+          trigger: `Escena ${s.id} — ${s.title}`,
+          content: (
+            <>
+              <div className="sub-label">Observaciones conductuales</div>
+              <p className="placeholder-text">{s.description}</p>
+            </>
+          ),
+        }));
+      return <Accordion items={items} />;
+    }
+
+    /* --- Indagaciones vinculadas a escenas --- */
+    function IndagacionesSection({ scenes }) {
+      const items = scenes
+        .filter((s) => s.indagacion != null)
+        .map((s) => ({
+          id: s.id,
+          trigger: `Escena ${s.id} — ${s.title}`,
+          content: (
+            <>
+              <div className="sub-label">Indagaciones</div>
+              <p className="placeholder-text">{s.indagacion}</p>
+            </>
+          ),
+        }));
+      return <Accordion items={items} />;
+    }
+
+    /* --- Diagnóstico diferencial --- */
+    function DxDiferencialSection({ items }) {
+      return (
+        <div style={{ overflowX: "auto" }}>
+          <table className="dx-table">
+            <thead>
+              <tr>
+                <th style={{ width: "28%" }}>Diagnóstico</th>
+                <th style={{ width: "25%" }}>Similitudes con el caso</th>
+                <th style={{ width: "35%" }}>Diferencias / Por qué se descarta o mantiene</th>
+                <th style={{ width: "12%" }}>Posición</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, i) => (
+                <tr key={i}>
+                  <td><span className="dx-label">{item.dx}</span></td>
+                  <td style={{ color: "var(--text-light)", fontSize: "0.85rem", fontStyle: "italic" }}>{item.similitudes}</td>
+                  <td style={{ color: "var(--text-light)", fontSize: "0.85rem", fontStyle: "italic" }}>{item.diferencias}</td>
+                  <td>
+                    <span style={{
+                      display: "inline-block",
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                      padding: "3px 8px",
+                      borderRadius: 99,
+                      background: i === 0 ? "rgba(122,143,168,0.12)" : "rgba(181,127,138,0.08)",
+                      color: i === 0 ? "var(--primary)" : "var(--accent)",
+                      border: `1px solid ${i === 0 ? "var(--border)" : "rgba(181,127,138,0.2)"}`,
+                    }}>
+                      {item.argumento}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+    /* --- Referencias bibliográficas --- */
+    function ReferenciasSection({ refs }) {
+      const sorted = [...refs].sort((a, b) =>
+        a.texto.replace(/^\[?\s*/, "").localeCompare(b.texto.replace(/^\[?\s*/, ""), "es")
+      );
+      return (
+        <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+          {sorted.map((ref) => (
+            <li
+              key={ref.id}
+              style={{
+                fontSize: "0.9rem",
+                lineHeight: 1.7,
+                color: ref.tipo === "placeholder" ? "var(--text-light)" : "var(--text-medium)",
+                fontStyle: ref.tipo === "placeholder" ? "italic" : "normal",
+                paddingLeft: "2.54cm",
+                textIndent: "-2.54cm",
+              }}
+            >
+              {ref.texto}
+              <em>{ref.titulo}</em>
+              {ref.resto}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    /* --- Navbar --- */
+    function NavBar() {
+      const sections = [
+        { id: "info-personal", label: "Info personal" },
+        { id: "escenas", label: "Observación e indagación" },
+        { id: "dsm", label: "Criterios DSM" },
+        { id: "tcc", label: "Perfil TCC" },
+        { id: "dx-diferencial", label: "Dx diferencial" },
+        { id: "impresion", label: "Impresión final" },
+        { id: "referencias", label: "Referencias" },
+      ];
+      const scrollTo = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+      return (
+        <nav className="navbar">
+          <div className="navbar-inner">
+            {sections.map((s, i) => (
+              <React.Fragment key={s.id}>
+                {i > 0 && <span className="nav-sep">·</span>}
+                <button className="nav-btn" onClick={() => scrollTo(s.id)}>{s.label}</button>
+              </React.Fragment>
+            ))}
+          </div>
+        </nav>
+      );
+    }
+
+    /* ============================================
+       APP PRINCIPAL
+       ============================================ */
+    function App() {
+      return (
+        <>
+          <NavBar />
+
+          <div className="container">
+
+            {/* HEADER */}
+            <header className="header">
+              <div className="header-label">TP3 · Análisis de caso clínico</div>
+              <h1>Tully (2018)</h1>
+              <p className="subtitle">
+                Trabajo práctico n.º 3 — Aproximación al Proceso Salud-Enfermedad
+              </p>
+              <div className="dx-badge">Diagnóstico presuntivo: {PACIENTE.dx}</div>
+            </header>
+
+            {/* 1. INFORMACIÓN PERSONAL */}
+            <section className="section" id="info-personal">
+              <h2 className="section-title">Información personal</h2>
+              <div className="ficha-grid">
+                <div className="ficha-item">
+                  <div className="ficha-label">Nombre</div>
+                  <div className={`ficha-value ${PACIENTE.nombre.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.nombre}
+                  </div>
+                </div>
+                <div className="ficha-item">
+                  <div className="ficha-label">Edad</div>
+                  <div className={`ficha-value ${PACIENTE.edad.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.edad}
+                  </div>
+                </div>
+                <div className="ficha-item full">
+                  <div className="ficha-label">Ocupación</div>
+                  <div className={`ficha-value ${PACIENTE.ocupacion.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.ocupacion}
+                  </div>
+                </div>
+                <div className="ficha-item full">
+                  <div className="ficha-label">Grupo familiar</div>
+                  <div className={`ficha-value ${PACIENTE.grupoFamiliar.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.grupoFamiliar}
+                  </div>
+                </div>
+                <div className="ficha-item full">
+                  <div className="ficha-label">Historial de enfermedades / Antecedentes</div>
+                  <div className={`ficha-value ${PACIENTE.antecedentes.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.antecedentes}
+                  </div>
+                </div>
+                <div className="ficha-item full">
+                  <div className="ficha-label">Motivo de consulta</div>
+                  <div className={`ficha-value ${PACIENTE.motivoConsulta.startsWith("[") ? "placeholder" : ""}`}>
+                    {PACIENTE.motivoConsulta}
+                  </div>
+                </div>
+                <div className="ficha-item full">
+                  <div className="ficha-label">Diagnóstico presuntivo</div>
+                  <div className="ficha-value" style={{ color: "var(--primary)", fontWeight: 500 }}>
+                    {PACIENTE.dx}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 2. ESCENAS */}
+            <section className="section" id="escenas">
+              <h2 className="section-title">Observación e indagación</h2>
+              <SceneCarousel scenes={SCENES} />
+            </section>
+
+            {/* 5. CRITERIOS DSM */}
+            <section className="section" id="dsm">
+              <h2 className="section-title">Criterios DSM</h2>
+              <DSMCriteriaSection criteria={DSM_CRITERIA} />
+            </section>
+
+            {/* 6. PERFIL COGNITIVO Y TCC */}
+            <section className="section" id="tcc">
+              <h2 className="section-title">Perfil cognitivo</h2>
+              <TCCSection tcc={TCC} />
+            </section>
+
+            {/* 7. DIAGNÓSTICO DIFERENCIAL */}
+            <section className="section" id="dx-diferencial">
+              <h2 className="section-title">Diagnóstico diferencial</h2>
+              <div className="impresion-box">
+                <div className="impresion-box-header">Trastorno Depresivo Mayor con características psicóticas</div>
+                <div className="impresion-box-body">
+                  <p>Aunque se identifican algunos síntomas compatibles con depresión, la presencia de un fenómeno perceptivo autónomo, no congruente con el estado de ánimo, orienta hacia Trastorno Psicótico Breve (TPB) con inicio en el postparto. A diferencia del Trastorno Depresivo Mayor con características psicóticas, donde las alucinaciones suelen reflejar culpabilidad intensa o sentimientos depresivos, la alucinación observada tiene función protectora, compensatoria, organizadora y de sostén ("Estoy acá para cuidarte"), sin contenido destructivo. Además, Marlo no cumple con los criterios completos de un episodio depresivo sostenido y su nivel de funcionamiento se mantiene relativamente preservado durante el episodio. La duración aguda y la naturaleza primariamente psicótica de los síntomas respaldan la conceptualización como TPB. Por estas razones, se prioriza TPB como diagnóstico más consistente con la evidencia observacional e indagatoria.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* 8. IMPRESIÓN DIAGNÓSTICA */}
+            <section className="section" id="impresion">
+              <h2 className="section-title">Impresión diagnóstica</h2>
+
+              <div className="impresion-box" style={{ marginBottom: 16 }}>
+                <div className="impresion-box-header">Diagnóstico informal</div>
+                <div className="impresion-box-body">
+                  <p>
+                    Marlo Moreau, 40 años, presenta un cuadro de inicio en el posparto inmediato caracterizado por alucinaciones visuales y auditivas bajo la figura de Tully, desregulación emocional intensa, deterioro funcional y privación severa de sueño. Los flashbacks del tramo final confirman que Tully no tenía correlato externo real, constituyendo el síntoma psicótico central del cuadro. El episodio tuvo una duración acotada, con recuperación posterior del nivel de funcionamiento previo, lo que es consistente con los tres criterios del DSM-5 para <strong>Trastorno Psicótico Breve con inicio en el posparto</strong>.
+                  </p>
+                  <p>
+                    Desde una perspectiva cognitivo-conductual, la figura de Tully puede leerse como una formación emergida ante el colapso del sistema de autorregulación. Encarnó todo lo que Marlo, sostenida por creencias de autosuficiencia total y fracaso como madre, no podía pedirse ni otorgarse a sí misma.
+                  </p>
+                  <p>
+                    Dado que el análisis se basa en material cinematográfico de ficción, el diagnóstico debe entenderse como una hipótesis de trabajo y no como una conclusión clínica definitiva.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* 9. REFERENCIAS BIBLIOGRÁFICAS */}
+            <section className="section" id="referencias">
+              <h2 className="section-title">Referencias bibliográficas</h2>
+              <ReferenciasSection refs={REFERENCIAS} />
+            </section>
+
+            {/* FOOTER */}
+            <footer className="footer">
+              <p>
+                Trabajo presentado para la asignatura Aproximación al Proceso Salud-Enfermedad
+                <br />
+                Universidad Nacional Autónoma de México · 2026
+              </p>
+            </footer>
+
+          </div>
+        </>
+      );
+    }
+
+    /* ============================================
+       RENDER
+       ============================================ */
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+
+</html>
