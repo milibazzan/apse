@@ -493,7 +493,8 @@
       color: var(--text-light);
       font-style: italic;
       font-size: 0.88rem;
-      white-space: pre-line;
+      white-space: pre-wrap;
+      text-indent: 0;
     }
 
     /* Sub-label dentro de accordion */
@@ -692,7 +693,7 @@
       ocupacion: "Encargada de Recursos Humanos en una empresa que hace barras de proteína. Actualmente de licencia por maternidad.",
       grupoFamiliar: "Esposo: Drew.\nHijos:\n- Jonah, el hijo mayor. Presenta dificultades conductuales.\n- Sarah, la hija del medio.\n- Mia, hija menor, recién nacida.\n",
       antecedentes: "Psicológicos: Depresión postparto documentada tras el nacimiento del primer hijo. Se observan episodios de desregulación emocional, fatiga extrema y dificultades en la gestión de estrés.\n\nFisiológicos: No se reportan enfermedades crónicas, aunque se observa evidencia de privación de sueño severa y agotamiento físico asociado al cuidado infantil intensivo.",
-      motivoConsulta: "El análisis se realiza a partir de la observación de un cuadro en el que se identifica sobrecarga emocional significativa, deterioro en el funcionamiento cotidiano y la presencia de un fenómeno perceptivo sin correlato externo.",
+      motivoConsulta: "El análisis se realiza a partir de la observación de un cuadro en el que se identifica sobrecarga emocional significativa, deterioro en el funcionamiento cotidiano y la presencia de un fenómeno perceptivo sin correlato externo en un contexto de posparto.",
       dx: "Trastorno Psicótico Breve con inicio posparto",
     };
 
@@ -895,9 +896,10 @@
       creenciasNucleares: "Soy un fracaso.\nMi valor disminuyó con el paso del tiempo / la maternidad.\nNo soy una buena madre.\nEstoy sola.\nNo tengo seguridad.\nAlgo en mí está mal.",
       creenciasIntermedias: "Una buena madre debería poder con todo.\nSi no puedo con todo, estoy fallando.\nNo debería necesitar ayuda.\nTengo que seguir aunque esté agotada.\nSi no cumplo con todo, decepciono a los demás.",
       pensamientosAutomaticos: "Me quiero matar.\nMe siento como un tacho de basura abandonado.\nEstoy harta de mí misma.\nNo tengo seguridad, tengo miedo.\nLos demás piensan que soy mala madre.",
+      estadoEmocional: "Miedo.\nDesánimo.\nInseguridad.\nAngustia.\nIrritabilidad.\nDisminución en la reactividad emocional en situaciones de alto impacto.\nAlternancia entre estados de baja reactividad emocional y momentos de alta intensidad emocional.",
       factoresVulnerabilidad: "Antecedente de episodio depresivo posterior al nacimiento de su primer hijo.\nIdealización del rol materno.\nBaja tolerancia al error propio.\nTendencia a la autocrítica.",
       desencadenantes: "Nacimiento reciente de su hija.\nPrivación de sueño.\nSobrecarga de tareas domésticas y de cuidado.\nDemandas de los hijos.\nHijo con problemas de conducta no diagnosticados.\nFalta de sistema de apoyo percibido.",
-      mantenimiento: "Falta de descanso sostenida.\nPensamientos negativos recurrentes.\nFalta de búsqueda de ayuda.\nDesconexión progresiva del entornoDependencia de la figura de Tully.\nSobrecarga constante sin espacios de recuperación.",
+      mantenimiento: "Falta de descanso sostenida.\nPensamientos negativos recurrentes.\nFalta de búsqueda de ayuda.\nDesconexión progresiva del entorno\nDependencia de la figura de Tully.\nSobrecarga constante sin espacios de recuperación.",
       sesgos: {
         cognitivos: "Pensamiento dicotómico en cuanto a la maternidad\nSobregeneralización\nCatastrofización\nLectura del pensamiento",
         conductuales: "Respuestas automatizadas de cuidado.\nEvitación de búsqueda de ayuda.\nSobrecompensación en el funcionamiento.",
@@ -1123,19 +1125,24 @@
           content: <p className="placeholder-text">{tcc.pensamientosAutomaticos}</p>,
         },
         {
+          id: "ee",
+          trigger: "Estado emocional",
+          content: <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.estadoEmocional}</p>,
+        },
+        {
           id: "fv",
           trigger: "Factores de vulnerabilidad",
-          content: <p className="placeholder-text">{tcc.factoresVulnerabilidad}</p>,
+          content: <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.factoresVulnerabilidad}</p>,
         },
         {
           id: "de",
           trigger: "Desencadenantes",
-          content: <p className="placeholder-text">{tcc.desencadenantes}</p>,
+          content: <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.desencadenantes}</p>,
         },
         {
           id: "ma",
           trigger: "Factores de mantenimiento",
-          content: <p className="placeholder-text">{tcc.mantenimiento}</p>,
+          content: <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.mantenimiento}</p>,
         },
         {
           id: "sg",
@@ -1143,11 +1150,11 @@
           content: (
             <>
               <div className="sub-label">Cognitivos</div>
-              <p className="placeholder-text">{tcc.sesgos.cognitivos}</p>
+              <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.sesgos.cognitivos}</p>
               <div className="sub-label">Conductuales</div>
-              <p className="placeholder-text">{tcc.sesgos.conductuales}</p>
+              <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.sesgos.conductuales}</p>
               <div className="sub-label">Fisiológicos</div>
-              <p className="placeholder-text">{tcc.sesgos.fisiologicos}</p>
+              <p style={{ whiteSpace: "pre-wrap", textIndent: 0 }}>{tcc.sesgos.fisiologicos}</p>
             </>
           ),
         },
@@ -1262,8 +1269,8 @@
     function NavBar() {
       const sections = [
         { id: "info-personal", label: "Info personal" },
-        { id: "escenas", label: "Observación e indagación" },
-        { id: "dsm", label: "Criterios DSM" },
+        { id: "escenas", label: "Obs. e indagación" },
+        { id: "dsm", label: "Criterios DSM-5" },
         { id: "tcc", label: "Perfil TCC" },
         { id: "dx-diferencial", label: "Dx diferencial" },
         { id: "impresion", label: "Impresión final" },
@@ -1364,13 +1371,13 @@
 
             {/* 5. CRITERIOS DSM */}
             <section className="section" id="dsm">
-              <h2 className="section-title">Criterios DSM</h2>
+              <h2 className="section-title">Criterios DSM-5</h2>
               <DSMCriteriaSection criteria={DSM_CRITERIA} />
             </section>
 
             {/* 6. PERFIL COGNITIVO Y TCC */}
             <section className="section" id="tcc">
-              <h2 className="section-title">Perfil cognitivo</h2>
+              <h2 className="section-title">Perfil cognitivo-conductual</h2>
               <TCCSection tcc={TCC} />
             </section>
 
@@ -1390,13 +1397,23 @@
               <h2 className="section-title">Impresión diagnóstica</h2>
 
               <div className="impresion-box" style={{ marginBottom: 16 }}>
+                <div className="impresion-box-header">Evaluación de riesgo</div>
+                <div className="impresion-box-body">
+                  <p>Se identifican indicadores de riesgo tanto para sí misma como para terceros. La privación de sueño severa y sostenida impacta negativamente en el juicio y en la capacidad de respuesta. Asimismo, la autovaloración negativa, junto con la verbalización "me quiero matar", constituye un indicador de riesgo que, aunque expresado en tono aparentemente no deliberado, puede resultar significativo.</p>
+<p>Se observan situaciones en las que el riesgo es significativo, como quedarse dormida con la bebé en brazos y la somnolencia al volante que desemboca en un accidente.</p><p> Estos episodios evidencian una disminución en la capacidad de sostener conductas de cuidado seguras que la compromete tanto a sí misma como a su entorno.
+Estos elementos refuerzan la gravedad del cuadro y la necesidad de intervención.
+</p>
+                </div>
+              </div>
+
+              <div className="impresion-box" style={{ marginBottom: 16 }}>
                 <div className="impresion-box-header">Diagnóstico informal</div>
                 <div className="impresion-box-body">
                   <p>
                     Marlo Moreau, 40 años, presenta un cuadro de inicio en el posparto inmediato caracterizado por alucinaciones visuales y auditivas bajo la figura de Tully, desregulación emocional intensa, deterioro funcional y privación severa de sueño. Los flashbacks del tramo final confirman que Tully no tenía correlato externo real, constituyendo el síntoma psicótico central del cuadro. El episodio tuvo una duración acotada, con recuperación posterior del nivel de funcionamiento previo, lo que es consistente con los tres criterios del DSM-5 para <strong>Trastorno Psicótico Breve con inicio en el posparto</strong>.
                   </p>
                   <p>
-                    Desde una perspectiva cognitivo-conductual, la figura de Tully puede leerse como una formación emergida ante el colapso del sistema de autorregulación. Encarnó todo lo que Marlo, sostenida por creencias de autosuficiencia total y fracaso como madre, no podía pedirse ni otorgarse a sí misma.
+                    Desde una perspectiva cognitivo-conductual, la figura de Tully puede leerse como una formación emergida ante el colapso del sistema de autorregulación, como una respuesta ante la imposibilidad de Marlo de solicitar ayuda o permitirse cuidado, en el contexto de creencias de autosuficiencia y de fracaso en el rol materno.
                   </p>
                   <p>
                     Dado que el análisis se basa en material cinematográfico de ficción, el diagnóstico debe entenderse como una hipótesis de trabajo y no como una conclusión clínica definitiva.
